@@ -1,14 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 
 import '../core/constants/asset_paths.dart';
 import '../core/theme/app_colors.dart';
 import '../services/unity_ads_instances.dart';
 import '../services/unity_interstitial_ad.dart';
 
-/// Splash screen — replace animation at assets/animations/splash.json when ready.
+/// Splash screen with branded logo while ads initialize.
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key, required this.onFinished});
 
@@ -57,49 +56,24 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: 180,
-              height: 180,
-              child: _buildAnimation(),
-            ),
-            const SizedBox(height: 24),
-            const Text(
-              'Subly',
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.w800,
-                color: AppColors.textDark,
-                letterSpacing: -0.5,
-              ),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'Track every subscription',
-              style: TextStyle(
-                fontSize: 14,
-                color: AppColors.textGrey,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+    final logoWidth = MediaQuery.sizeOf(context).width * 0.72;
 
-  Widget _buildAnimation() {
-    return Lottie.asset(
-      AssetPaths.splash,
-      fit: BoxFit.contain,
-      errorBuilder: (_, __, ___) => const Icon(
-        Icons.subscriptions_rounded,
-        size: 96,
-        color: AppColors.primaryPurple,
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 32),
+          child: Image.asset(
+            AssetPaths.splashLogo,
+            width: logoWidth,
+            fit: BoxFit.contain,
+            errorBuilder: (_, __, ___) => const Icon(
+              Icons.subscriptions_rounded,
+              size: 96,
+              color: AppColors.primaryPurple,
+            ),
+          ),
+        ),
       ),
     );
   }

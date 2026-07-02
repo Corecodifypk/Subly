@@ -46,4 +46,5 @@ flutter:
     - assets/icons/bottom_nav_mage_chart.png
     - assets/icons/bottom_nav_settingpng.png
     - assets/icons/
+    - assets/images/splash_logo.png
     - assets/animations/notfound.json

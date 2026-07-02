@@ -3,6 +3,7 @@ class AssetPaths {
   AssetPaths._();
 
   static const icons = 'assets/icons';
+  static const images = 'assets/images';
   static const animations = 'assets/animations';
 
   // Bottom navigation (your files)
@@ -27,6 +28,9 @@ class AssetPaths {
   // Empty state Lottie
   static const notFound = '$animations/notfound.json';
 
-  /// Splash animation — add assets/animations/splash.json when ready.
+  /// Branded splash logo (also used for native launch screens).
+  static const splashLogo = '$images/splash_logo.png';
+
+  /// Splash animation — optional Lottie fallback.
   static const splash = '$animations/splash.json';
 }
