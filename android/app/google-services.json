@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "232911419116",
+    "project_id": "subly-778b1",
+    "storage_bucket": "subly-778b1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:232911419116:android:7f2ca60b98ca274d0b17c9",
+        "android_client_info": {
+          "package_name": "com.subscriptionmanager.subly"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBez4AR4f_K_HyK6hYvYdXIxSnP_PhXQD8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
