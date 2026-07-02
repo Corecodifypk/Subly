@@ -72,7 +72,7 @@ class NotificationsScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 const Text(
-                  'Subly alerts you 3 days before each subscription renews '
+                  'SubTrack alerts you 3 days before each subscription renews '
                   'and on the due date. Enable notifications so you never miss a payment.',
                   style: TextStyle(
                     fontSize: 13,

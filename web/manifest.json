@@ -1,6 +1,6 @@
 {
-    "name": "subly",
-    "short_name": "subly",
+    "name": "SubTrack",
+    "short_name": "SubTrack",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

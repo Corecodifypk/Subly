@@ -48,7 +48,7 @@ class SublyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => AppProvider(db)..init(),
       child: MaterialApp(
-        title: 'Subly',
+        title: 'SubTrack',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light,
         navigatorObservers: [

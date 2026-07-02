@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Subly</string>
+	<string>SubTrack</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -13,7 +13,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>Subly</string>
+	<string>SubTrack</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -46,18 +46,18 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Subly needs access to your photo library to set your profile picture.</string>
+	<string>SubTrack needs access to your photo library to set your profile picture.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Subly needs camera access to take a profile picture.</string>
+	<string>SubTrack needs camera access to take a profile picture.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
 		<string>remote-notification</string>
 	</array>
 	<key>NSUserNotificationsUsageDescription</key>
-	<string>Subly sends reminders before subscriptions renew and when payments are due.</string>
+	<string>SubTrack sends reminders before subscriptions renew and when payments are due.</string>
 	<key>NSUserTrackingUsageDescription</key>
-	<string>This allows Unity Ads to show more relevant ads. You can decline and still use Subly.</string>
+	<string>This allows Unity Ads to show more relevant ads. You can decline and still use SubTrack.</string>
 	<key>SKAdNetworkItems</key>
 	<array>
 		<dict>
