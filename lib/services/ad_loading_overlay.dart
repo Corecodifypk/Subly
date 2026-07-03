@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../core/theme/app_colors.dart';
+import 'tracking_transparency_service.dart';
 
 /// Root navigator for ad disclosure overlays when no [BuildContext] is passed.
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
@@ -21,6 +22,9 @@ class AdLoadingOverlay {
     required Future<void> Function() showAd,
     Duration minVisible = disclosureDuration,
   }) async {
+    // Ensure iOS tracking consent was requested before any ad plays.
+    await TrackingTransparencyService.instance.ensureRequested();
+
     final ctx = _resolveContext(context);
 
     if (ctx == null) {

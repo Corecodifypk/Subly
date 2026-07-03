@@ -16,7 +16,6 @@ import 'services/ad_loading_overlay.dart';
 import 'services/analytics_service.dart';
 import 'services/database_service.dart';
 import 'services/firebase_bootstrap.dart';
-import 'services/unity_ads_instances.dart';
 import 'widgets/bottom_nav_bar.dart';
 
 void main() async {
@@ -32,9 +31,7 @@ void main() async {
   final firebaseReady = await FirebaseBootstrap.initialize();
   AnalyticsService.instance.setEnabled(firebaseReady);
 
-  // Initialize Unity once at app start (before any banner/interstitial widgets).
-  await unityAds.initialize();
-
+  // Unity Ads initializes on the splash screen after iOS ATT consent.
   final db = DatabaseService();
   runApp(SublyApp(db: db));
 }

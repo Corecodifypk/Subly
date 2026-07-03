@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <inset xmlns:android="http://schemas.android.com/apk/res/android"
     android:drawable="@drawable/splash_logo"
-    android:insetLeft="31%"
-    android:insetRight="31%"
-    android:insetTop="38%"
-    android:insetBottom="38%" />
+    android:insetLeft="33%"
+    android:insetRight="33%"
+    android:insetTop="40%"
+    android:insetBottom="40%" />

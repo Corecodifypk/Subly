@@ -57,7 +57,7 @@
 	<key>NSUserNotificationsUsageDescription</key>
 	<string>SubTrack sends reminders before subscriptions renew and when payments are due.</string>
 	<key>NSUserTrackingUsageDescription</key>
-	<string>This allows Unity Ads to show more relevant ads. You can decline and still use SubTrack.</string>
+	<string>This identifier will be used to deliver personalized ads to you.</string>
 	<key>SKAdNetworkItems</key>
 	<array>
 		<dict>

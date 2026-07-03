@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import '../core/constants/asset_paths.dart';
 import '../core/theme/app_colors.dart';
 import '../services/ad_loading_overlay.dart';
+import '../services/tracking_transparency_service.dart';
 import '../services/unity_ads_instances.dart';
-import '../services/unity_interstitial_ad.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({
@@ -22,7 +22,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
-  static const _logoSize = 150.0;
+  static const _logoSize = 120.0;
 
   late final AnimationController _progressController;
 
@@ -44,6 +44,10 @@ class _SplashScreenState extends State<SplashScreen>
 
   Future<void> _boot() async {
     try {
+      await TrackingTransparencyService.instance.ensureRequested();
+
+      if (!mounted) return;
+
       if (!unityAds.isInitialized) {
         await unityAds.initialize();
       }
@@ -90,7 +94,7 @@ class _SplashScreenState extends State<SplashScreen>
             const _SplashBackground(),
             Center(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 28),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -132,32 +136,14 @@ class _SplashScreenState extends State<SplashScreen>
 }
 
 class _SplashLogo extends StatelessWidget {
-  static const _size = _SplashScreenState._logoSize;
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: _size,
-      height: _size,
-      child: Image.asset(
-        AssetPaths.splashIcon,
-        width: _size,
-        height: _size,
-        fit: BoxFit.contain,
-        filterQuality: FilterQuality.high,
-        errorBuilder: (context, error, stackTrace) {
-          return ClipRRect(
-            borderRadius: BorderRadius.circular(28),
-            child: Image.asset(
-              AssetPaths.splashLogo,
-              width: _size,
-              height: _size,
-              fit: BoxFit.contain,
-              filterQuality: FilterQuality.high,
-            ),
-          );
-        },
-      ),
+    return Image.asset('assets/images/app_icon_source.png',
+      width: 120,
+      height: 120,
+      fit: BoxFit.contain,
+      filterQuality: FilterQuality.high,
     );
   }
 }

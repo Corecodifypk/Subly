@@ -167,7 +167,6 @@ class UnityRewardedAd {
 
     if (_isLoaded) {
       await AdLoadingOverlay.runBeforeShow(
-        context: context,
         showAd: () => showAd(
           onReward: (_) {
             rewarded = true;
