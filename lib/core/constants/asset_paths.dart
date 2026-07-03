@@ -28,12 +28,6 @@ class AssetPaths {
   // Empty state Lottie
   static const notFound = '$animations/notfound.json';
 
-  /// Branded splash logo (also used for native launch screens).
-  static const splashLogo = '$images/splash_logo.png';
-
-  /// 120×120 splash logo for consistent sizing.
-  static const splashLogo120 = '$images/splash_logo_120.png';
-
-  /// Splash animation — optional Lottie fallback.
-  static const splash = '$animations/splash.json';
+  /// Single app logo — used on splash and everywhere in the app.
+  static const appLogo = '$images/app_icon_source.png';
 }

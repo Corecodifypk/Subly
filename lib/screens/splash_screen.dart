@@ -44,6 +44,7 @@ class _SplashScreenState extends State<SplashScreen>
 
   Future<void> _boot() async {
     try {
+      // iOS ATT system dialog — required before any ad / tracking SDK work.
       await TrackingTransparencyService.instance.ensureRequested();
 
       if (!mounted) return;
@@ -94,7 +95,7 @@ class _SplashScreenState extends State<SplashScreen>
             const _SplashBackground(),
             Center(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+                padding: const EdgeInsets.symmetric(horizontal: 28),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -136,12 +137,14 @@ class _SplashScreenState extends State<SplashScreen>
 }
 
 class _SplashLogo extends StatelessWidget {
+  static const _size = _SplashScreenState._logoSize;
 
   @override
   Widget build(BuildContext context) {
-    return Image.asset('assets/images/app_icon_source.png',
-      width: 120,
-      height: 120,
+    return Image.asset(
+      AssetPaths.appLogo,
+      width: _size,
+      height: _size,
       fit: BoxFit.contain,
       filterQuality: FilterQuality.high,
     );
