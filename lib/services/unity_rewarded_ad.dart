@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 
+import 'ad_loading_overlay.dart';
 import 'unity_ads_service.dart';
 
 class UnityRewardedAd {
@@ -135,7 +136,7 @@ class UnityRewardedAd {
     }
   }
 
-  /// Shows rewarded ad. Pre-loaded ads play instantly.
+  /// Shows rewarded ad. Pre-loaded ads play after the policy disclosure delay.
   /// If ad fails to load/show, [onRewardCallback] still fires after [fallbackDelay].
   Future<void> showRewardedAd({
     BuildContext? context,
@@ -155,31 +156,6 @@ class UnityRewardedAd {
       onAdClosed?.call();
     }
 
-    BuildContext? loadingContext;
-    if (context != null && context.mounted) {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (dialogContext) {
-          loadingContext = dialogContext;
-          return const Center(
-            child: Material(
-              type: MaterialType.transparency,
-              child: _AdLoadingCard(),
-            ),
-          );
-        },
-      );
-    }
-
-    void dismissLoading() {
-      final ctx = loadingContext;
-      if (ctx != null && ctx.mounted && Navigator.canPop(ctx)) {
-        Navigator.pop(ctx);
-      }
-      loadingContext = null;
-    }
-
     await ensureInitialized();
 
     if (!_isLoaded) {
@@ -189,16 +165,17 @@ class UnityRewardedAd {
       );
     }
 
-    dismissLoading();
-
     if (_isLoaded) {
-      await showAd(
-        onReward: (_) {
-          rewarded = true;
-          onRewardCallback();
-        },
-        onAdClosed: finish,
-        onAdFailed: (_) => finish(),
+      await AdLoadingOverlay.runBeforeShow(
+        context: context,
+        showAd: () => showAd(
+          onReward: (_) {
+            rewarded = true;
+            onRewardCallback();
+          },
+          onAdClosed: finish,
+          onAdFailed: (_) => finish(),
+        ),
       );
       return;
     }
@@ -213,37 +190,5 @@ class UnityRewardedAd {
     }
     preload();
     finish();
-  }
-}
-
-class _AdLoadingCard extends StatelessWidget {
-  const _AdLoadingCard();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.black.withValues(alpha: 0.85),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white24),
-      ),
-      child: const Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CircularProgressIndicator(color: Colors.white, strokeWidth: 3),
-          SizedBox(height: 20),
-          Text(
-            'LOADING AD...',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.2,
-              fontSize: 14,
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }

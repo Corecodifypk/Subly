@@ -31,6 +31,9 @@ class AssetPaths {
   /// Branded splash logo (also used for native launch screens).
   static const splashLogo = '$images/splash_logo.png';
 
+  /// Icon-only crop for the Flutter splash (no baked-in title).
+  static const splashIcon = '$images/splash_icon.png';
+
   /// Splash animation — optional Lottie fallback.
   static const splash = '$animations/splash.json';
 }

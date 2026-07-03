@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../core/constants/asset_paths.dart';
 import '../core/theme/app_colors.dart';
+import '../services/ad_loading_overlay.dart';
 import '../services/unity_ads_instances.dart';
 import '../services/unity_interstitial_ad.dart';
 
@@ -19,11 +20,26 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
+  static const _logoSize = 150.0;
+
+  late final AnimationController _progressController;
+
   @override
   void initState() {
     super.initState();
-    _boot();
+    _progressController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 4200),
+    )..forward();
+    unawaited(_boot());
+  }
+
+  @override
+  void dispose() {
+    _progressController.dispose();
+    super.dispose();
   }
 
   Future<void> _boot() async {
@@ -37,7 +53,7 @@ class _SplashScreenState extends State<SplashScreen> {
         unawaited(actionRewarded.preload());
       }
 
-      await Future.delayed(const Duration(milliseconds: 1200));
+      await Future<void>.delayed(const Duration(milliseconds: 1200));
 
       if (!mounted) return;
 
@@ -45,21 +61,23 @@ class _SplashScreenState extends State<SplashScreen> {
         await splashInterstitial.loadAd();
 
         if (mounted && splashInterstitial.isReady) {
-          await AdLoadingOverlay.run(
+          await AdLoadingOverlay.runBeforeShow(
             context: context,
-            task: () => splashInterstitial.showAndWait(
-              onClosed: () {},
-            ),
+            showAd: () => splashInterstitial.showAndWait(onClosed: () {}),
           );
         }
       }
     } catch (e) {
-      debugPrint("Splash Error : $e");
+      debugPrint('Splash error: $e');
     }
 
-    if (mounted) {
-      widget.onFinished();
+    if (!mounted) return;
+
+    if (_progressController.value < 1) {
+      await _progressController.forward(from: _progressController.value);
     }
+
+    if (mounted) widget.onFinished();
   }
 
   @override
@@ -69,175 +87,40 @@ class _SplashScreenState extends State<SplashScreen> {
       body: SafeArea(
         child: Stack(
           children: [
-            //================ Background =================//
-
-            Positioned(
-              top: -120,
-              left: -120,
-              child: Container(
-                width: 260,
-                height: 260,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: AppColors.primaryPurple.withOpacity(.08),
-                    width: 18,
-                  ),
-                ),
-              ),
-            ),
-
-            Positioned(
-              top: 120,
-              right: -70,
-              child: Container(
-                width: 180,
-                height: 180,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.primaryPurple.withOpacity(.04),
-                ),
-              ),
-            ),
-
-            Positioned(
-              bottom: -170,
-              left: -40,
-              right: -40,
-              child: Container(
-                height: 340,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(300),
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      AppColors.primaryPurple.withOpacity(.08),
-                      AppColors.primaryPurple.withOpacity(.28),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-
-            //================ Main Content =================//
-
+            const _SplashBackground(),
             Center(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
+                padding: const EdgeInsets.symmetric(horizontal: 28),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Logo Container
-                    Container(
-                      width: 200,
-                      height: 200,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(40),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(.08),
-                            blurRadius: 35,
-                            spreadRadius: 2,
-                            offset: const Offset(0, 18),
-                          ),
-                        ],
-                      ),
-                      clipBehavior: Clip.antiAlias,
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Image.asset(
-                          AssetPaths.splashLogo,
-                          fit: BoxFit.contain,
-                          errorBuilder: (_, __, ___) {
-                            return const Icon(
-                              Icons.receipt_long_rounded,
-                              color: AppColors.primaryPurple,
-                              size: 90,
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 38),
-
-                    RichText(
-                      text: TextSpan(
-                        style: const TextStyle(
-                          fontSize: 46,
-                          fontWeight: FontWeight.w800,
-                          fontFamily: 'Roboto',
-                        ),
-                        children: [
-                          const TextSpan(
-                            text: "Sub",
-                            style: TextStyle(
-                              color: Colors.black87,
-                            ),
-                          ),
-                          TextSpan(
-                            text: "Track",
-                            style: TextStyle(
-                              color: AppColors.primaryPurple,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 10),
-
+                    _SplashLogo(),
+                    const SizedBox(height: 32),
+                    const _SplashTitle(),
+                    const SizedBox(height: 8),
                     Text(
-                      "Bill & Subscription Tracker",
+                      'Bill & Subscription Tracker',
                       style: TextStyle(
                         color: Colors.grey.shade600,
-                        fontSize: 18,
+                        fontSize: 16,
                         fontWeight: FontWeight.w500,
-                        letterSpacing: .4,
+                        letterSpacing: 0.3,
                       ),
                     ),
-
-                    const SizedBox(height: 70),
-
-                    RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        style: TextStyle(
-                          color: Colors.black87,
-                          fontSize: 20,
-                          height: 1.5,
-                        ),
-                        children: [
-                          const TextSpan(
-                            text:
-                            "Track your subscriptions.\nStay organized. ",
-                          ),
-                          TextSpan(
-                            text: "Save more.",
-                            style: TextStyle(
-                              color: AppColors.primaryPurple,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 45),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _dot(false),
-                        const SizedBox(width: 10),
-                        _dot(true),
-                        const SizedBox(width: 10),
-                        _dot(false),
-                      ],
-                    ),
+                    const SizedBox(height: 56),
+                    const _SplashTagline(),
                   ],
+                ),
+              ),
+            ),
+            Positioned(
+              left: 40,
+              right: 40,
+              bottom: 36,
+              child: AnimatedBuilder(
+                animation: _progressController,
+                builder: (context, _) => _SplashProgressBar(
+                  progress: _progressController.value,
                 ),
               ),
             ),
@@ -246,18 +129,199 @@ class _SplashScreenState extends State<SplashScreen> {
       ),
     );
   }
+}
 
-  Widget _dot(bool active) {
-    return AnimatedContainer(
-      duration: const Duration(milliseconds: 250),
-      width: active ? 14 : 10,
-      height: active ? 14 : 10,
-      decoration: BoxDecoration(
-        color: active
-            ? AppColors.primaryPurple
-            : AppColors.primaryPurple.withOpacity(.25),
-        shape: BoxShape.circle,
+class _SplashLogo extends StatelessWidget {
+  static const _size = _SplashScreenState._logoSize;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: _size,
+      height: _size,
+      child: Image.asset(
+        AssetPaths.splashIcon,
+        width: _size,
+        height: _size,
+        fit: BoxFit.contain,
+        filterQuality: FilterQuality.high,
+        errorBuilder: (context, error, stackTrace) {
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(28),
+            child: Image.asset(
+              AssetPaths.splashLogo,
+              width: _size,
+              height: _size,
+              fit: BoxFit.contain,
+              filterQuality: FilterQuality.high,
+            ),
+          );
+        },
       ),
+    );
+  }
+}
+
+class _SplashTitle extends StatelessWidget {
+  const _SplashTitle();
+
+  @override
+  Widget build(BuildContext context) {
+    return RichText(
+      text: const TextSpan(
+        style: TextStyle(
+          fontSize: 42,
+          fontWeight: FontWeight.w800,
+          height: 1.05,
+        ),
+        children: [
+          TextSpan(
+            text: 'Sub',
+            style: TextStyle(color: Color(0xFF1A1A1A)),
+          ),
+          TextSpan(
+            text: 'Track',
+            style: TextStyle(color: AppColors.primaryPurple),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SplashTagline extends StatelessWidget {
+  const _SplashTagline();
+
+  @override
+  Widget build(BuildContext context) {
+    return RichText(
+      textAlign: TextAlign.center,
+      text: const TextSpan(
+        style: TextStyle(
+          color: Color(0xFF1A1A1A),
+          fontSize: 18,
+          height: 1.45,
+        ),
+        children: [
+          TextSpan(text: 'Track your subscriptions.\nStay organized. '),
+          TextSpan(
+            text: 'Save more.',
+            style: TextStyle(
+              color: AppColors.primaryPurple,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SplashProgressBar extends StatelessWidget {
+  const _SplashProgressBar({required this.progress});
+
+  final double progress;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        ClipRRect(
+          borderRadius: BorderRadius.circular(999),
+          child: SizedBox(
+            height: 5,
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                ColoredBox(color: AppColors.primaryPurple.withValues(alpha: 0.14)),
+                FractionallySizedBox(
+                  alignment: Alignment.centerLeft,
+                  widthFactor: progress.clamp(0.0, 1.0),
+                  child: const DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          AppColors.primaryPurple,
+                          AppColors.primaryPurpleDark,
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          'Loading${'.' * ((progress * 3).floor() % 3 + 1)}',
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: Colors.grey.shade500,
+            letterSpacing: 0.4,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _SplashBackground extends StatelessWidget {
+  const _SplashBackground();
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Positioned(
+          top: -110,
+          left: -110,
+          child: Container(
+            width: 240,
+            height: 240,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(
+                color: AppColors.primaryPurple.withValues(alpha: 0.08),
+                width: 16,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          top: 110,
+          right: -60,
+          child: Container(
+            width: 160,
+            height: 160,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: AppColors.primaryPurple.withValues(alpha: 0.05),
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: -150,
+          left: -30,
+          right: -30,
+          child: Container(
+            height: 300,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(280),
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  AppColors.primaryPurple.withValues(alpha: 0.06),
+                  AppColors.primaryPurple.withValues(alpha: 0.22),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

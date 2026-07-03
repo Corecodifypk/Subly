@@ -12,6 +12,7 @@ import 'screens/notifications_screen.dart';
 import 'screens/reports_screen.dart';
 import 'screens/settings_screen.dart';
 import 'screens/splash_screen.dart';
+import 'services/ad_loading_overlay.dart';
 import 'services/analytics_service.dart';
 import 'services/database_service.dart';
 import 'services/firebase_bootstrap.dart';
@@ -48,6 +49,7 @@ class SublyApp extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => AppProvider(db)..init(),
       child: MaterialApp(
+        navigatorKey: rootNavigatorKey,
         title: 'SubTrack',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.light,
