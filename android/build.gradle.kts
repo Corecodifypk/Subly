@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 allprojects {
     repositories {
         google()
@@ -17,6 +19,10 @@ subprojects {
 }
 subprojects {
     project.evaluationDependsOn(":app")
+
+    tasks.withType<KotlinCompile>().configureEach {
+        incremental = false
+    }
 }
 
 tasks.register<Delete>("clean") {

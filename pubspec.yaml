@@ -1,7 +1,7 @@
 name: subly
 description: SubTrack - Subscription management app
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.0.0+2
 
 environment:
   sdk: ^3.10.7
@@ -48,5 +48,5 @@ flutter:
     - assets/icons/bottom_nav_mage_chart.png
     - assets/icons/bottom_nav_settingpng.png
     - assets/icons/
-    - assets/images/app_icon_source.png
+    - assets/images/
     - assets/animations/notfound.json

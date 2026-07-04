@@ -186,7 +186,11 @@ class AppProvider extends ChangeNotifier {
 
 
   Future<void> pickAndCropProfileImage() async {
-    final picked = await _picker.pickImage(source: ImageSource.gallery);
+    // Android: uses system photo picker — no READ_MEDIA_IMAGES permission needed.
+    final picked = await _picker.pickImage(
+      source: ImageSource.gallery,
+      requestFullMetadata: false,
+    );
     if (picked == null) return;
 
     final cropped = await ImageCropper().cropImage(
