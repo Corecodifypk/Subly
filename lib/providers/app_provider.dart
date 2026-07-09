@@ -228,8 +228,6 @@ class AppProvider extends ChangeNotifier {
 
     notifyListeners();
 
-    unawaited(actionRewarded.showRewardedAd(onRewardCallback: () {}));
-
   }
 
 
@@ -276,8 +274,6 @@ class AppProvider extends ChangeNotifier {
 
     notifyListeners();
 
-    unawaited(actionRewarded.showRewardedAd(onRewardCallback: () {}));
-
   }
 
 
@@ -291,8 +287,6 @@ class AppProvider extends ChangeNotifier {
     await _syncNotifications();
 
     notifyListeners();
-
-    unawaited(actionRewarded.showRewardedAd(onRewardCallback: () {}));
 
   }
 
@@ -309,8 +303,6 @@ class AppProvider extends ChangeNotifier {
     await updateSubscription(sub.copyWith(nextPaymentDate: newDate));
 
     await AnalyticsService.instance.logSubscriptionRenewed(sub.name);
-
-    unawaited(actionRewarded.showRewardedAd(onRewardCallback: () {}));
 
   }
 
@@ -331,7 +323,6 @@ class AppProvider extends ChangeNotifier {
       await AnalyticsService.instance.logSubscriptionDeleted(sub.name);
     }
     notifyListeners();
-    unawaited(actionRewarded.showRewardedAd(onRewardCallback: () {}));
   }
 
   List<Subscription> getByDate(DateTime date) {

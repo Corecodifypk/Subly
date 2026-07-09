@@ -25,21 +25,6 @@ class BrandIconService {
       secondaryColor: Color(0xFF000000),
       label: 'N',
     ),
-    'chatgpt': const BrandInfo(
-      color: Color(0xFF000000),
-      secondaryColor: Color(0xFFFFFFFF),
-      icon: Icons.auto_awesome,
-    ),
-    'chat gpt': const BrandInfo(
-      color: Color(0xFF000000),
-      secondaryColor: Color(0xFFFFFFFF),
-      icon: Icons.auto_awesome,
-    ),
-    'openai': const BrandInfo(
-      color: Color(0xFF000000),
-      secondaryColor: Color(0xFFFFFFFF),
-      icon: Icons.auto_awesome,
-    ),
     'spotify': const BrandInfo(
       color: Color(0xFF1DB954),
       secondaryColor: Color(0xFF000000),
@@ -177,7 +162,6 @@ class BrandIconService {
         'YouTube',
         'Amazon Prime Video',
         'Spotify',
-        'ChatGPT',
         'Disney+',
       ];
 }

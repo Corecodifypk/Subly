@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../core/constants/asset_paths.dart';
 import '../core/theme/app_colors.dart';
-import '../services/ad_loading_overlay.dart';
 import '../services/tracking_transparency_service.dart';
 import '../services/unity_ads_instances.dart';
 
@@ -54,24 +53,10 @@ class _SplashScreenState extends State<SplashScreen>
       }
 
       if (unityAds.isInitialized) {
-        unawaited(splashInterstitial.loadAd());
         unawaited(actionRewarded.preload());
       }
 
       await Future<void>.delayed(const Duration(milliseconds: 1200));
-
-      if (!mounted) return;
-
-      if (unityAds.isInitialized) {
-        await splashInterstitial.loadAd();
-
-        if (mounted && splashInterstitial.isReady) {
-          await AdLoadingOverlay.runBeforeShow(
-            context: context,
-            showAd: () => splashInterstitial.showAndWait(onClosed: () {}),
-          );
-        }
-      }
     } catch (e) {
       debugPrint('Splash error: $e');
     }
