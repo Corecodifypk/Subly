@@ -54,6 +54,7 @@ class _SplashScreenState extends State<SplashScreen>
 
       if (unityAds.isInitialized) {
         unawaited(actionRewarded.preload());
+        unawaited(actionInterstitial.loadAd());
       }
 
       await Future<void>.delayed(const Duration(milliseconds: 1200));

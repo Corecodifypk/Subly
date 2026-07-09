@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:unity_ads_plugin/unity_ads_plugin.dart';
 
 import 'unity_ads_service.dart';
@@ -98,7 +97,7 @@ class UnityInterstitialAd {
   }
 
   static void _runOnUi(VoidCallback action) {
-    SchedulerBinding.instance.scheduleFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       try {
         action();
       } catch (e, st) {
@@ -107,9 +106,15 @@ class UnityInterstitialAd {
     });
   }
 
-  /// Show pre-loaded ad and wait until it fully closes.
   Future<void> showAndWait({required VoidCallback onClosed}) async {
     await _ensureInitialized();
+
+    if (!_isLoaded) {
+      await loadAd().timeout(
+        const Duration(seconds: 6),
+        onTimeout: () => false,
+      );
+    }
 
     if (!_isLoaded) {
       _runOnUi(onClosed);

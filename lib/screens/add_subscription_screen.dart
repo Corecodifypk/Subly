@@ -12,6 +12,9 @@ import '../services/brand_icon_service.dart';
 import '../widgets/app_icon.dart';
 import '../widgets/brand_icon.dart';
 import '../widgets/bottom_nav_bar.dart';
+import '../services/unity_ads_instances.dart';
+import '../services/ad_loading_overlay.dart';
+import '../utils/feedback_utils.dart';
 
 class AddSubscriptionScreen extends StatefulWidget {
   const AddSubscriptionScreen({super.key, this.subscription});
@@ -85,6 +88,12 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
 
     final category = _guessCategory(name);
     final provider = context.read<AppProvider>();
+    final navigator = Navigator.of(context);
+
+    await AdLoadingOverlay.runBeforeShow(
+      context: context,
+      showAd: () => actionInterstitial.showAndWait(onClosed: () {}),
+    );
 
     if (widget.isEditing) {
       final updated = widget.subscription!.copyWith(
@@ -98,6 +107,9 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
         category: category,
       );
       await provider.updateSubscription(updated);
+      if (mounted) {
+        showTopSnackBar(context, 'Subscription updated successfully');
+      }
     } else {
       final sub = Subscription(
         id: const Uuid().v4(),
@@ -111,8 +123,14 @@ class _AddSubscriptionScreenState extends State<AddSubscriptionScreen> {
         category: category,
       );
       await provider.addSubscription(sub);
+      if (provider.subscriptions.length >= 2 && !provider.hasRatedApp) {
+        provider.triggerReviewPrompt();
+      }
+      if (mounted) {
+        showTopSnackBar(context, 'Subscription added successfully');
+      }
     }
-    if (mounted) Navigator.pop(context);
+    navigator.pop();
   }
 
   String _guessCategory(String name) {

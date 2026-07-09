@@ -9,6 +9,8 @@ import '../widgets/glass_surface.dart';
 import 'all_subscriptions_screen.dart';
 import 'notifications_screen.dart';
 import 'profile_screens.dart';
+import '../services/unity_ads_instances.dart';
+import '../widgets/unity_banner_widget.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -23,7 +25,12 @@ class SettingsScreen extends StatelessWidget {
     final progress = budget > 0 ? (spending / budget).clamp(0.0, 1.0) : 0.0;
 
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(horizontal: isTablet ? 32 : 20),
+      padding: EdgeInsets.fromLTRB(
+        isTablet ? 32 : 20,
+        0,
+        isTablet ? 32 : 20,
+        130,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -309,6 +316,8 @@ class SettingsScreen extends StatelessWidget {
               ),
             ),
           ),
+          const SizedBox(height: 20),
+          UnityBannerWidget(placementId: unityAds.bannerAdId),
           const SizedBox(height: 100),
         ],
       ),

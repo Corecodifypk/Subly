@@ -45,7 +45,12 @@ class _ReportsScreenState extends State<ReportsScreen>
         curve: Curves.easeOut,
       ),
       child: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(horizontal: isTablet ? 32 : 20),
+        padding: EdgeInsets.fromLTRB(
+          isTablet ? 32 : 20,
+          0,
+          isTablet ? 32 : 20,
+          130,
+        ),
         child: Center(
           child: ConstrainedBox(
             constraints: BoxConstraints(maxWidth: maxWidth),

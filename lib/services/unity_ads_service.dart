@@ -22,7 +22,7 @@ class UnityAdsService {
     return androidGameId;
   }
 
-  static const bool _testMode = false;
+  static const bool _testMode = true;
 
   String get rewardedAdId =>
       Platform.isAndroid ? 'Rewarded_Android' : 'Rewarded_iOS';

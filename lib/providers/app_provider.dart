@@ -411,6 +411,25 @@ class AppProvider extends ChangeNotifier {
     return rewarded;
   }
 
+  bool get hasRatedApp => _db.hasRatedApp();
+
+  Future<void> setHasRatedApp(bool value) async {
+    await _db.setHasRatedApp(value);
+    notifyListeners();
+  }
+
+  bool _showReviewPrompt = false;
+  bool get showReviewPrompt => _showReviewPrompt;
+
+  void triggerReviewPrompt() {
+    _showReviewPrompt = true;
+    notifyListeners();
+  }
+
+  void clearReviewPrompt() {
+    _showReviewPrompt = false;
+    notifyListeners();
+  }
 }
 
 

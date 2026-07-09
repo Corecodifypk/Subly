@@ -16,6 +16,9 @@ import 'all_subscriptions_screen.dart';
 import 'profile_screens.dart';
 import 'notifications_screen.dart';
 import 'subscription_detail_screen.dart';
+import '../widgets/review_dialog.dart';
+import '../services/unity_ads_instances.dart';
+import '../widgets/unity_banner_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -83,14 +86,24 @@ class _HomeScreenState extends State<HomeScreen>
     final isTablet = MediaQuery.of(context).size.width > 600;
     final maxWidth = isTablet ? 700.0 : double.infinity;
 
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (provider.showReviewPrompt) {
+        provider.clearReviewPrompt();
+        ReviewDialog.show(context);
+      }
+    });
+
     return FadeTransition(
       opacity: CurvedAnimation(
         parent: _fadeController,
         curve: Curves.easeOut,
       ),
       child: SingleChildScrollView(
-        padding: EdgeInsets.symmetric(
-          horizontal: isTablet ? 32 : 20,
+        padding: EdgeInsets.fromLTRB(
+          isTablet ? 32 : 20,
+          0,
+          isTablet ? 32 : 20,
+          130,
         ),
         child: Center(
           child: ConstrainedBox(
@@ -102,7 +115,9 @@ class _HomeScreenState extends State<HomeScreen>
                 _buildHeader(provider),
                 const SizedBox(height: 24),
                 _buildSpendingCard(provider),
-                const SizedBox(height: 28),
+                const SizedBox(height: 16),
+                UnityBannerWidget(placementId: unityAds.bannerAdId),
+                const SizedBox(height: 16),
                 _buildSectionHeader(
                   'Upcoming',
                   onViewAll: () => Navigator.push(

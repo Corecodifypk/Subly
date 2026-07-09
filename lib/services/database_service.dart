@@ -124,4 +124,10 @@ class DatabaseService {
   Future<void> setNotificationsEnabled(bool value) async {
     await _settings!.put('notifications_enabled', value);
   }
+
+  bool hasRatedApp() => _settings!.get('has_rated_app') == true;
+
+  Future<void> setHasRatedApp(bool value) async {
+    await _settings!.put('has_rated_app', value);
+  }
 }

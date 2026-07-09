@@ -78,6 +78,13 @@ class UnityRewardedAd {
     }
   }
 
+  void preloadNext() {
+    _isLoaded = false;
+    Future.delayed(const Duration(milliseconds: 1500), () {
+      unawaited(preload());
+    });
+  }
+
   Future<bool> showAd({
     Function(String)? onReward,
     Function()? onAdClosed,
@@ -107,21 +114,18 @@ class UnityRewardedAd {
         onClick: (pid) => debugPrint('Rewarded clicked: $pid'),
         onSkipped: (pid) {
           debugPrint('Rewarded skipped: $pid');
-          _isLoaded = false;
-          preload();
+          preloadNext();
           onAdClosed?.call();
         },
         onComplete: (pid) {
           debugPrint('Rewarded completed: $pid');
-          _isLoaded = false;
           onReward?.call(pid);
-          preload();
+          preloadNext();
           onAdClosed?.call();
         },
         onFailed: (pid, error, message) {
           debugPrint('Rewarded show failed: $pid — $message');
-          _isLoaded = false;
-          preload();
+          preloadNext();
           onAdFailed?.call(message);
           onAdClosed?.call();
         },
@@ -129,8 +133,7 @@ class UnityRewardedAd {
       return true;
     } catch (e) {
       debugPrint('Rewarded show error: $e');
-      _isLoaded = false;
-      preload();
+      preloadNext();
       onAdClosed?.call();
       return false;
     }
@@ -142,10 +145,11 @@ class UnityRewardedAd {
     BuildContext? context,
     required Function() onRewardCallback,
     Function()? onAdClosed,
-    Duration fallbackDelay = const Duration(seconds: 5),
+    Duration fallbackDelay = Duration.zero,
   }) async {
     var rewarded = false;
     var closed = false;
+    final adDone = Completer<void>();
 
     void finish() {
       if (closed) return;
@@ -154,6 +158,9 @@ class UnityRewardedAd {
         onRewardCallback();
       }
       onAdClosed?.call();
+      if (!adDone.isCompleted) {
+        adDone.complete();
+      }
     }
 
     await ensureInitialized();
@@ -167,14 +174,24 @@ class UnityRewardedAd {
 
     if (_isLoaded) {
       await AdLoadingOverlay.runBeforeShow(
-        showAd: () => showAd(
-          onReward: (_) {
-            rewarded = true;
-            onRewardCallback();
-          },
-          onAdClosed: finish,
-          onAdFailed: (_) => finish(),
-        ),
+        showAd: () async {
+          final started = await showAd(
+            onReward: (_) {
+              rewarded = true;
+              onRewardCallback();
+            },
+            onAdClosed: finish,
+            onAdFailed: (_) => finish(),
+          );
+          if (!started) {
+            finish();
+          }
+        },
+      );
+      // Wait for ad presentation to fully finish/close before returning
+      await adDone.future.timeout(
+        const Duration(seconds: 120),
+        onTimeout: finish,
       );
       return;
     }
@@ -187,7 +204,7 @@ class UnityRewardedAd {
       onRewardCallback();
       rewarded = true;
     }
-    preload();
+    preloadNext();
     finish();
   }
 }

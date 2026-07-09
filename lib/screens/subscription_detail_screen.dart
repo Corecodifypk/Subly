@@ -10,6 +10,10 @@ import '../widgets/app_icon.dart';
 import '../widgets/brand_icon.dart';
 import '../widgets/glass_surface.dart';
 import 'add_subscription_screen.dart';
+import '../services/unity_ads_instances.dart';
+import '../widgets/unity_banner_widget.dart';
+import '../services/ad_loading_overlay.dart';
+import '../utils/feedback_utils.dart';
 
 class SubscriptionDetailScreen extends StatelessWidget {
   const SubscriptionDetailScreen({super.key, required this.subscription});
@@ -37,8 +41,19 @@ class SubscriptionDetailScreen extends StatelessWidget {
     );
 
     if (confirmed == true && context.mounted) {
-      await context.read<AppProvider>().deleteSubscription(subscription.id);
-      if (context.mounted) Navigator.pop(context);
+      final provider = context.read<AppProvider>();
+      final navigator = Navigator.of(context);
+
+      await AdLoadingOverlay.runBeforeShow(
+        context: context,
+        showAd: () => actionInterstitial.showAndWait(onClosed: () {}),
+      );
+
+      await provider.deleteSubscription(subscription.id);
+      if (context.mounted) {
+        showTopSnackBar(context, 'Subscription deleted successfully');
+      }
+      navigator.pop();
     }
   }
 
@@ -218,6 +233,8 @@ class SubscriptionDetailScreen extends StatelessWidget {
                 ),
               ),
             ),
+            const SizedBox(height: 24),
+            UnityBannerWidget(placementId: unityAds.bannerAdId),
           ],
         ),
       ),

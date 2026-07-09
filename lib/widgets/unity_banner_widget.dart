@@ -67,7 +67,7 @@ class _UnityBannerWidgetState extends State<UnityBannerWidget> {
     const height = 50.0;
 
     if (_hasError || !_ready) {
-      return SizedBox(width: width, height: height);
+      return const SizedBox.shrink();
     }
 
     return SizedBox(

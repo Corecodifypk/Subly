@@ -9,6 +9,10 @@ final UnityInterstitialAd splashInterstitial = UnityInterstitialAd(
   placementId: unityAds.interstitialAdId,
 );
 
+final UnityInterstitialAd actionInterstitial = UnityInterstitialAd(
+  placementId: unityAds.interstitialAdId,
+);
+
 final UnityRewardedAd actionRewarded = UnityRewardedAd(
   placementId: unityAds.rewardedAdId,
 );
